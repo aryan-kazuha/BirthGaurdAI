@@ -7,7 +7,7 @@ import RiskResult from './components/RiskResult';
 import ModelData from './components/ModelData';
 import Analytics from './components/Analytics';
 import About from './components/About';
-
+import PregnancyTimeline from './components/PregnancyTimeline';
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -33,6 +33,9 @@ function App() {
                 <Link to="/assessment" className="text-gray-700 hover:text-[#2BB4A0]">
                   Risk Assessment
                 </Link>
+                <Link to="/timeline" className="text-gray-700 hover:text-[#2BB4A0]">
+                  Timeline
+                  </Link>
                 <Link to="/model" className="text-gray-700 hover:text-[#2BB4A0]">
                   Model & Data
                 </Link>
@@ -73,6 +76,13 @@ function App() {
                   Risk Assessment
                 </Link>
                 <Link
+                  to="/timeline"
+                  className="block py-2 text-gray-700 hover:text-[#2BB4A0]"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Timeline
+                </Link>
+                <Link
                   to="/model"
                   className="block py-2 text-gray-700 hover:text-[#2BB4A0]"
                   onClick={() => setMobileMenuOpen(false)}
@@ -106,6 +116,7 @@ function App() {
           <Route path="/model" element={<ModelData />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/about" element={<About />} />
+          <Route path="/timeline" element={<PregnancyTimeline />} />
         </Routes>
 
         {/* Footer */}

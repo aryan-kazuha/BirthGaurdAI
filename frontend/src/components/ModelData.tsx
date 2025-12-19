@@ -3,27 +3,12 @@ import { Database, Brain, BarChart3, TrendingUp, CheckCircle } from 'lucide-reac
 export default function ModelData() {
   const datasets = [
     {
-      name: 'Kaggle / UCI Maternal Health Risk Dataset',
-      description: 'Primary dataset containing maternal health parameters and risk classifications',
-      features: ['Age', 'Systolic BP', 'Diastolic BP', 'Blood Sugar', 'Body Temperature', 'Heart Rate'],
-      size: '1,014 records',
-      source: 'UCI Machine Learning Repository',
-    },
-    {
       name: 'Mendeley Maternal Dataset',
       description: 'Comprehensive dataset with pregnancy complications and outcomes',
       features: ['BMI', 'Diabetes Status', 'Previous Complications', 'Mental Health', 'Birth Spacing'],
       size: '2,500+ records',
       source: 'Mendeley Data Repository',
-    },
-    {
-      name: 'NFHS-Inspired Synthetic Data',
-      description: 'Simulated data based on National Family Health Survey patterns',
-      features: ['Rural/Urban Demographics', 'Regional Variations', 'Socioeconomic Factors'],
-      size: '1,000 records',
-      source: 'Synthetically generated for class balancing',
-      isSynthetic: true,
-    },
+    }
   ];
 
   const algorithms = [
@@ -49,16 +34,24 @@ export default function ModelData() {
   ];
 
   const featureImportance = [
-    { feature: 'Systolic BP', importance: 0.28, level: 'High' },
-    { feature: 'Previous Complications', importance: 0.24, level: 'High' },
-    { feature: 'Blood Sugar', importance: 0.18, level: 'High' },
-    { feature: 'Hemoglobin', importance: 0.15, level: 'Medium' },
-    { feature: 'Age', importance: 0.12, level: 'Medium' },
-    { feature: 'BMI', importance: 0.10, level: 'Medium' },
-    { feature: 'Diastolic BP', importance: 0.08, level: 'Medium' },
-    { feature: 'Birth Spacing', importance: 0.06, level: 'Low' },
+    { feature: 'BMI', importance: 2274, level: 'High' },
+    { feature: 'BS', importance: 1603, level: 'High' },
+    { feature: 'Heart rate', importance: 1371, level: 'High' },
+    { feature: 'Age', importance: 1090, level: 'Medium' },
+    { feature: 'Systolic BP', importance: 856, level: 'Medium' },
+    { feature: 'Diastolic BP', importance: 791, level: 'Medium' },
+    { feature: 'Prexisting Diabetes', importance: 644, level: 'Medium' },
+    { feature: 'Mental Health', importance: 608, level: 'Low' },
   ];
+  const totalImportance = featureImportance.reduce(
+  (sum, item) => sum + item.importance,
+  0
+);
 
+const featureImportancePct = featureImportance.map(item => ({
+  ...item,
+  importance_pct: (item.importance / totalImportance) * 100,
+}));
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -230,23 +223,23 @@ export default function ModelData() {
           <div className="bg-white rounded-xl p-6 text-center shadow-md">
             <TrendingUp className="w-10 h-10 text-[#2BB4A0] mx-auto mb-3" />
             <p className="text-gray-600 mb-2">Overall Accuracy</p>
-            <p className="text-3xl text-[#2BB4A0]">89%</p>
+            <p className="text-3xl text-[#2BB4A0]">98.7%</p>
           </div>
           <div className="bg-white rounded-xl p-6 text-center shadow-md">
             <BarChart3 className="w-10 h-10 text-[#2BB4A0] mx-auto mb-3" />
             <p className="text-gray-600 mb-2">High-Risk Recall</p>
-            <p className="text-3xl text-[#2BB4A0]">91%</p>
+            <p className="text-3xl text-[#2BB4A0]">98.9%</p>
             <p className="text-gray-500 text-xs mt-1">Critical for safety</p>
           </div>
           <div className="bg-white rounded-xl p-6 text-center shadow-md">
             <CheckCircle className="w-10 h-10 text-[#2BB4A0] mx-auto mb-3" />
             <p className="text-gray-600 mb-2">Precision</p>
-            <p className="text-3xl text-[#2BB4A0]">86%</p>
+            <p className="text-3xl text-[#2BB4A0]">97.8%</p>
           </div>
           <div className="bg-white rounded-xl p-6 text-center shadow-md">
             <TrendingUp className="w-10 h-10 text-[#2BB4A0] mx-auto mb-3" />
             <p className="text-gray-600 mb-2">ROC-AUC</p>
-            <p className="text-3xl text-[#2BB4A0]">0.92</p>
+            <p className="text-3xl text-[#2BB4A0]">0.998</p>
           </div>
         </div>
       </div>
@@ -261,42 +254,54 @@ export default function ModelData() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b-2 border-gray-200">
-                <th className="text-left py-3 px-4 text-gray-700">Feature</th>
-                <th className="text-left py-3 px-4 text-gray-700">Importance Score</th>
-                <th className="text-left py-3 px-4 text-gray-700">Visual</th>
-                <th className="text-left py-3 px-4 text-gray-700">Impact Level</th>
-              </tr>
-            </thead>
-            <tbody>
-              {featureImportance.map((item, index) => (
-                <tr key={index} className="border-b border-gray-100">
-                  <td className="py-3 px-4 text-gray-900">{item.feature}</td>
-                  <td className="py-3 px-4 text-gray-700">{item.importance.toFixed(2)}</td>
-                  <td className="py-3 px-4">
-                    <div className="w-full bg-gray-200 rounded-full h-2 max-w-xs">
-                      <div
-                        className="bg-[#2BB4A0] h-2 rounded-full"
-                        style={{ width: `${item.importance * 100}%` }}
-                      />
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        item.level === 'High'
-                          ? 'bg-red-100 text-red-700'
-                          : item.level === 'Medium'
-                          ? 'bg-amber-100 text-amber-700'
-                          : 'bg-green-100 text-green-700'
-                      }`}
-                    >
-                      {item.level}
-                    </span>
-                  </td>
+                <tr className="border-b-2 border-gray-200">
+                  <th className="text-left py-3 px-4 text-gray-700">Feature</th>
+                  <th className="text-left py-3 px-4 text-gray-700">Importance</th>
+                  <th className="text-left py-3 px-4 text-gray-700">Importance %</th>
+                  <th className="text-left py-3 px-4 text-gray-700">Visual</th>
+                  <th className="text-left py-3 px-4 text-gray-700">Impact Level</th>
                 </tr>
-              ))}
-            </tbody>
+              </thead>
+
+            <tbody>
+  {featureImportancePct.map((item, index) => (
+    <tr key={index} className="border-b border-gray-100">
+      <td className="py-3 px-4 text-gray-900">{item.feature}</td>
+
+      <td className="py-3 px-4 text-gray-700">
+        {item.importance.toFixed(0)}
+      </td>
+
+      <td className="py-3 px-4 text-gray-700">
+        {item.importance_pct.toFixed(2)}%
+      </td>
+
+      <td className="py-3 px-4">
+        <div className="w-full bg-gray-200 rounded-full h-2 max-w-xs">
+          <div
+            className="bg-[#2BB4A0] h-2 rounded-full"
+            style={{ width: `${item.importance_pct}%` }}
+          />
+        </div>
+      </td>
+
+      <td className="py-3 px-4">
+        <span
+          className={`px-3 py-1 rounded-full text-sm ${
+            item.level === 'High'
+              ? 'bg-red-100 text-red-700'
+              : item.level === 'Medium'
+              ? 'bg-amber-100 text-amber-700'
+              : 'bg-green-100 text-green-700'
+          }`}
+        >
+          {item.level}
+        </span>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
           </table>
         </div>
       </div>
