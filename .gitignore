@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+
+.env
+
+# Vector DB / generated files
+*.faiss
+*.pkl
+
+# Data
+data.csv
+
+# Node
+node_modules/
+
+# Editor
+.vscode/
+
+# Vectorized data / batches
+batches/
+
+# Frontend
+frontend/node_modules/
+frontend/.env
+frontend/dist/
+frontend/build/
