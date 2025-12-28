@@ -125,7 +125,7 @@ export default function RiskAssessment() {
 
     recognitionRef.current = recognition;
     recognition.start();
-
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -581,4 +581,4 @@ export default function RiskAssessment() {
       </div>
     </div>
   );
-}
+ };
