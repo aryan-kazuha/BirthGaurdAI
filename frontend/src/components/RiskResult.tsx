@@ -52,8 +52,15 @@ export default function RiskResult() {
     };
 
     setData(parsedData);
-    const predLabel = prediction.prediction.toLowerCase();
+    const rawPred = prediction.prediction;
 
+    if (typeof rawPred !== 'string') {
+      console.error("Invalid prediction value:", prediction);
+      navigate('/assessment');
+      return;
+    }
+
+    const predLabel = rawPred.toLowerCase();
     // Map numeric prediction → risk level
     // Adjust if your labels are different (e.g. 0=low,1=medium,2=high)
     let riskLevel: 'low' | 'medium' | 'high';
