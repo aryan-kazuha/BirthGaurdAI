@@ -14,7 +14,9 @@ Pandas & NumPy – data processing
 
 Scikit-learn – ML models (Logistic Regression / Decision Tree)
 
-SMOTE – handling class imbalance
+Langchain - Rag pipeline
+
+LGBM - ML model for prediction
 
 TypeScript-Frontend
 
