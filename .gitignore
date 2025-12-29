@@ -23,3 +23,5 @@ node_modules/
 # Vectorized data / batches
 batches/
 build_db.py
+
+build
