@@ -40,7 +40,7 @@ export default function RagChat() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/rag/ask", {
+      const res = await fetch("https://maternalai-backend.onrender.com/rag/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: trimmed }),
