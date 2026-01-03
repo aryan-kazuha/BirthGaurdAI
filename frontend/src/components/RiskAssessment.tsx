@@ -9,10 +9,13 @@ declare global {
     SpeechRecognition: any;
   }
 }
+// Auto-detects local vs production
+
 
 export default function RiskAssessment() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    patientId: '',
     name: '',
     age: '',
     height: '',
@@ -31,8 +34,18 @@ export default function RiskAssessment() {
     mentalHealthConcerns: false,
     shortBirthSpacing: false,
   });
+
     const [isListening, setIsListening] = useState(false);
     const recognitionRef = useRef<any>(null);
+      const [history, setHistory] = useState<{
+      patient: any | null;
+      visits: any[];
+    }>({
+      patient: null,
+      visits: [],
+    });
+
+  
 
 
 
@@ -61,6 +74,34 @@ export default function RiskAssessment() {
 
     return updated;
   });
+};
+  const fetchHistoryForPatient = async () => {
+  if (!formData.patientId.trim()) return;
+
+  try {
+    const res = await fetch('http://localhost:8000/patient/history', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ patient_id: formData.patientId }),
+    });
+
+    const data = await res.json();
+    setHistory({
+    patient: data?.patient ?? null,
+    visits: Array.isArray(data?.visits) ? data.visits : [],
+  });
+    // Optional: prefill latest visit form_data
+    if (data.visits && data.visits.length > 0) {
+      const latest = data.visits[0];
+      setFormData((prev) => ({
+        ...prev,
+        ...latest.form_data,
+        patientId: formData.patientId,
+      }));
+    }
+  } catch (err) {
+    console.error('Failed to fetch history', err);
+  }
 };
 
  const toggleSpeechToText = () => {
@@ -105,7 +146,7 @@ export default function RiskAssessment() {
       console.log("Transcript:", transcript);
 
       try {
-        const res = await fetch("https://maternalai-backend.onrender.com/predict", {
+        const res = await fetch("http://localhost:8000/parse-text", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: transcript }),
@@ -143,12 +184,16 @@ export default function RiskAssessment() {
     formData.mentalHealthConcerns ? 1 : 0,
     Number(formData.heartrate),
   ];
-
+  const payload = {
+    patient_id: formData.patientId,  // add this field to formData + UI
+    features,
+    form_data: formData,
+  };
   try {
     const res = await fetch('http://localhost:8000/predict', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ features }),
+      body: JSON.stringify(payload ),
     });
     const result = await res.json(); 
     console.log('API result:', result);
@@ -244,7 +289,22 @@ export default function RiskAssessment() {
                 required
               />
             </div>
-
+            <div>
+              <label htmlFor="patientId" className="block text-gray-700 mb-2">
+                Patient ID
+              </label>
+              <input
+                type="text"
+                id="patientId"
+                name="patientId"
+                value={formData.patientId}
+                onChange={handleInputChange}
+                onBlur={fetchHistoryForPatient}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2BB4A0]"
+                placeholder="Enter patient ID"
+                required
+              />
+            </div>
             <div>
               <label htmlFor="age" className="block text-gray-700 mb-2">
                 Age (years)
@@ -571,6 +631,24 @@ export default function RiskAssessment() {
           <ArrowRight className="ml-2 w-6 h-6" />
         </button>
       </form>
+      {history.visits.length > 0 && (
+      <div className="mt-8 bg-white rounded-2xl shadow-md p-6">
+        <h3 className="text-gray-900 mb-4">
+          Previous Visits for {history.patient?.name || history.patient?.patient_id}
+        </h3>
+        <ul className="space-y-3 max-h-64 overflow-y-auto text-sm text-gray-700">
+          {history.visits.map((v) => (
+            <li key={v.id} className="border-b pb-2">
+              <div className="font-semibold">
+                Visit at {new Date(v.visit_time).toLocaleString()}
+              </div>
+              <div>Risk: {(v.prediction && v.prediction.risk) || JSON.stringify(v.prediction)}</div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
 
       {/* Disclaimer */}
       <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
