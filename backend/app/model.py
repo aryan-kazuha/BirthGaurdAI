@@ -18,6 +18,6 @@ def predict(features : list[float]):
     prob = model.predict_proba(x)[0].max()
 
     return {
-        "prediction" : pred,
-        "confidence score" : float(prob)
+    "prediction": str(pred[0]) if isinstance(pred, (list, tuple, np.ndarray)) else str(pred),
+    "confidence score": float(prob)
     }

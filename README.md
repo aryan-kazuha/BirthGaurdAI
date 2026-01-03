@@ -22,6 +22,10 @@ TypeScript-Frontend
 
 Matplotlib / Seaborn – analysis & visualization
 
+Live Demo 
+Deployed Application:https://maternalai.netlify.app/
+This is a functional prototype demonstrating the core features of the solution.
+
 PPT Walkthrough & Project Explanation:
 https://drive.google.com/file/d/1_99A1BXEqhmrDJd12V8E_IdXu4oHPF0R/view?usp=drivesdk
 This video presents the problem context, solution approach, dataset, model design, and expected impact using a detailed PPT walkthrough.
